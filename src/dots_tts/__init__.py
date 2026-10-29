@@ -9,14 +9,14 @@ def _check_torch_install() -> None:
     Runs at package import so users get an actionable message instead of a
     cryptic ``libcudart.so.X: cannot open shared object file`` from
     torchaudio's C extension loader, or a downstream dtype mismatch after a
-    silent CPU fallback. Reads versions via ``importlib.metadata`` to avoid
-    triggering the broken library load itself.
+    silent CPU fallback. Check dependency presence before loading the actual
+    audio extension; supported vendor release numbers need not be identical.
     """
     import importlib.metadata as _md
 
     try:
-        torch_version = _md.version("torch")
-        torchaudio_version = _md.version("torchaudio")
+        _md.version("torch")
+        _md.version("torchaudio")
     except _md.PackageNotFoundError:
         return
 
