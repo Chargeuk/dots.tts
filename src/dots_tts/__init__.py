@@ -30,14 +30,9 @@ def _check_torch_install() -> None:
         "--index-url https://download.pytorch.org/whl/cu128"
     )
 
-    torch_minor = tuple(torch_version.split("+")[0].split(".")[:2])
-    torchaudio_minor = tuple(torchaudio_version.split("+")[0].split(".")[:2])
-    if torch_minor != torchaudio_minor:
-        raise RuntimeError(
-            f"torch ({torch_version}) and torchaudio ({torchaudio_version}) "
-            f"minor versions do not match.\n{_install_hint}"
-        )
-
+    # Native extension loading is the compatibility check. Torch and torchaudio
+    # distribution minor numbers can differ in supported vendor builds, so a
+    # numeric comparison would reject a working installation before loading it.
     try:
         import torchaudio  # noqa: F401
     except OSError as exc:
